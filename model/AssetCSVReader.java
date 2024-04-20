@@ -37,7 +37,6 @@ public class AssetCSVReader implements ReadData<Asset> {
 			purchaseD = LocalDate.parse(purchaseDate, DateTimeFormatter.ISO_DATE);
 		}
 		
-		
 		String description = parts[4];
 		 
 		String purchaseValue = parts[5];
@@ -54,8 +53,6 @@ public class AssetCSVReader implements ReadData<Asset> {
 				warrantyD = LocalDate.parse(purchaseDate, DateTimeFormatter.ISO_DATE);
 			}
 		}
-		
-		
 		
 		return new Asset(name, description, category, location, purchaseD, d, warrantyD);
 	}
