@@ -19,13 +19,13 @@ public class Asset extends General_Info implements DataProcess {
 
 	}
 
-	public Asset(String argN, String argD, Category argC, Location argL) {
+	public Asset(String argN, String argD, Category argC, Location argL, LocalDate argP, Double argV, LocalDate argW) {
 		super(argN, argD);
 		this.setCategory(argC);
 		this.setLocation(argL);
-		this.setPurchaseDate(null);
-		this.setPurchaseValue(0.0);
-		this.setWarrantyExpDate(null);
+		this.setPurchaseDate(argP);
+		this.setPurchaseValue(argV);
+		this.setWarrantyExpDate(argW);
 
 	}
 
@@ -69,6 +69,11 @@ public class Asset extends General_Info implements DataProcess {
 	public LocalDate getWarrantyExpDate() {
 		return warrantyExpDate;
 	}
+	
+	private String getLocalDatetoString(LocalDate date) {
+		if (date != null) return date.toString();
+		else return "";
+	}
 
 	public void display() {
 		System.out.println("Asset name: " + this.getName());
@@ -83,9 +88,9 @@ public class Asset extends General_Info implements DataProcess {
 
 	public String saveToCsv() {
 		String res;
-		res = new String(this.getName() + "," + this.getDescription() + "," + this.getCategory().getName() + ","
-				+ this.getLocation().getName() + "," + this.getPurchaseDate().toString() + "," + this.getPurchaseValue()
-				+ "," + (this.getWarrantyExpDate()).toString());
+		res = new String(this.getName() + "," + this.getCategory().getName() + ","+ this.getLocation().getName() 
+				+ "," + this.getLocalDatetoString(getPurchaseDate()) + "," + this.getDescription() + "," +  this.getPurchaseValue()
+				+ "," + (this.getLocalDatetoString(getWarrantyExpDate())));
 
 		return res;
 	}

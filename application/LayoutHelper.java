@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -207,18 +208,41 @@ public interface LayoutHelper {
     	}
     }
 	
+	public default void clearDropdownList(ComboBox<?>...arg) {
+		for (ComboBox<?> itr: arg) {
+			itr.setValue(null);
+		}
+	}
+	
+	public default void clearDatePicker(DatePicker...arg) {
+		for (DatePicker itr: arg) {
+			itr.getEditor().clear();
+		}
+	}
+	
 	
 	/**
 	 * Set action for clear Button
 	 * @param arg
 	 * @param itr: represent which line is TextField
 	 */
-	public default void clearButtonAction(ArrayList<HBox> arg, int...itr) {
-		((Button)arg.get(arg.size() - 1).getChildren().get(1)).setOnAction(e -> {
-			for(int i : itr) {
-				clearTextField((TextField)arg.get(i).lookup("#text"));
-			}
-		});
+	public default void clearButtonAction(ArrayList<HBox> arg, int... itr) {
+	    ((Button) arg.get(arg.size() - 1).getChildren().get(1)).setOnAction(e -> {
+	        for (int i : itr) {
+	            HBox hbox = arg.get(i);
+	            for (Node node : hbox.getChildren()) {
+	                if (node instanceof TextField) {
+	                    clearTextField((TextField) node);
+	                } else if (node instanceof TextArea) {
+	                    clearTextArea((TextArea) node);
+	                } else if (node instanceof DatePicker) {
+	                    clearDatePicker((DatePicker) node);
+	                } else if (node instanceof ComboBox<?>) {
+	                    clearDropdownList((ComboBox<?>) node);
+	                }
+	            }
+	        }
+	    });
 	}
 	/**
 	 * This is Label to represent that line can not be empty.

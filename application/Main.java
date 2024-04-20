@@ -16,7 +16,7 @@ public class Main extends Application {
 	private NewCategory newCategory = new NewCategory();
 	private NewLocation newLocation = new NewLocation();
 	private NewAsset newAsset = new NewAsset();
-	
+	private SearchAsset search = new SearchAsset();
 	//Testing Page for single element
 	//private TestPage test = new TestPage();
 
@@ -25,6 +25,7 @@ public class Main extends Application {
 		newCategory.setVisible("New Category Page".equals(choice));
 		newLocation.setVisible("New Location Page".equals(choice));
 		newAsset.setVisible("New Asset".equals(choice));
+		search.setVisible("Search Page".equals(choice));
 		//test page
 		//test.setVisible("Reports Page".equals(choice));
 	});
@@ -35,13 +36,14 @@ public class Main extends Application {
 		newLocation.setVisible("New Location Page".equals(choice));
 		newAsset.setVisible("New Asset Page".equals(choice));
 		homeNavigator.setVisible(!welcomePage.isVisible());
+		search.setVisible("Search Page".equals(choice));
 		//test page
 		//test.setVisible("Reports Page".equals(choice));
 	});
 
 	public void start(Stage primaryStage) throws Exception {
 		
-		rightSection.getChildren().addAll(welcomePage, newCategory, newLocation, newAsset, homeNavigator);
+		rightSection.getChildren().addAll(welcomePage, newCategory, newLocation, newAsset, homeNavigator, search);
 		initializePage();
 
 //		rightSection.getChildren().add(test);
@@ -65,9 +67,9 @@ public class Main extends Application {
 		rightSection.getChildren().get(1).setVisible(false);
 		rightSection.getChildren().get(2).setVisible(false);
 		rightSection.getChildren().get(3).setVisible(false);
-		// home navigatior
+		// home navigator
 		rightSection.getChildren().get(4).setVisible(false);
-		
+		rightSection.getChildren().get(5).setVisible(false);
 		//Test page visible
 		
 	}

@@ -1,5 +1,9 @@
 package application;
 
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,6 +22,8 @@ import javafx.util.converter.DoubleStringConverter;
 import model.Asset;
 import model.Category;
 import model.Location;
+import model.CategoryCSVReader;
+import model.LocationCSVReader;
 
 public class NewAsset extends VBox implements LayoutHelper{
 	/**
@@ -46,7 +52,7 @@ public class NewAsset extends VBox implements LayoutHelper{
 		super.setPadding(new Insets(40, 40, 40, 40));
 		
 		layout = new ArrayList<HBox>();
-		setExample();
+		setChoices();
 		
         layout.add(createTitle(title));
         layout.add(createTextLine(line1, true));
@@ -62,7 +68,7 @@ public class NewAsset extends VBox implements LayoutHelper{
         ((TextField)layout.get(6).lookup("#text")).setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
         
 		initialize(this, layout);
-		clearButtonAction(layout, 1, 5, 6);
+		clearButtonAction(layout, 1, 2, 3, 4, 5, 6, 7);
 		buttonAction(layout);
 	}
 	
@@ -81,7 +87,14 @@ public class NewAsset extends VBox implements LayoutHelper{
 		//description
 		asset.setDesciption(((TextArea) layout.get(5).lookup("#text")).getText());
 		//purchase value as Double
-		asset.setPurchaseValue(Double.parseDouble(((TextField) layout.get(6).lookup("#text")).getText()));
+		 String purchaseValueText = ((TextField) layout.get(6).lookup("#text")).getText();
+		    if (!purchaseValueText.isEmpty()) {
+		        // If the text field is not empty, parse its content to a Double
+		        asset.setPurchaseValue(Double.parseDouble(purchaseValueText));
+		    } else {
+		        // If the text field is empty, set the purchase value to null or any default value you prefer
+		        asset.setPurchaseValue(null); // Or any default value you prefer
+		    }
 		//Warranty expiration date
 		asset.setWarrantyExpDate(((DatePicker)getInput(layout.get(7), "date")).getValue());
 		
@@ -104,24 +117,64 @@ public class NewAsset extends VBox implements LayoutHelper{
 			} else {
 				// Save the category name to a .csv file
 				this.getInfo();
-				//saveCategoryToCsv();
-				System.out.println(asset.saveToCsv());
-				//
+				//save asset
+				saveAssetToCsv();
+				//clear
+				clearTextField((TextField)arg.get(1).lookup("#text"));
+				clearDropdownList((ComboBox<String>)arg.get(2).lookup("#choice"));
+				clearDropdownList((ComboBox<String>)arg.get(3).lookup("#choice"));
+				clearDatePicker((DatePicker)arg.get(4).lookup("#date"));
+				clearTextArea((TextArea)arg.get(5).lookup("#text"));
+				clearTextField((TextField)arg.get(6).lookup("#text"));
+				clearDatePicker((DatePicker)arg.get(7).lookup("#date"));
 			}
 		});
 
 	}
 	
-	private void setExample() {
-		//later will change to read category and location from csv
-		Category ex1 = new Category("example category");
-		category.put(ex1.getName(), ex1);
-		
-		Location ex2 = new Location("example location", "example description");
-		location.put(ex2.getName(), ex2);
-		
-		//ex1.display();
-		//ex2.display();
+	private void saveAssetToCsv() {
+		try {
+			// Check if the file exists
+			if (Files.exists(Paths.get(file))) {
+                // If it exists, append the new category to the file
+                try (FileWriter writer = new FileWriter(file, true)) {
+                    writer.append("\n");
+                    writer.append(asset.saveToCsv());
+                }
+			} else {
+				try (FileWriter writer = new FileWriter(file)) {
+                    writer.append("Asset Name,Category,Location,Purchase Date,Description,Purchased Value,Warranty Expiration Date");
+                }
+				
+				saveAssetToCsv();
+				return;
+			}
+			
+			// Show a success message
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setHeaderText("Success");
+            alert.setContentText("Location created successfully.");
+            alert.showAndWait();
+			
+		} catch (IOException ex) {
+            // Show an error message if there was a problem saving the asset
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setHeaderText("Error");
+            alert.setContentText("There was a problem saving the asset.");
+            alert.showAndWait();
+        }
+	}
+	
+	private void setChoices() {
+		CategoryCSVReader categoryReader = new CategoryCSVReader();
+		LocationCSVReader locationReader = new LocationCSVReader();
+		 
+		try {
+			category = categoryReader.readData("category.csv");
+			location = locationReader.readData("location.csv");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 
