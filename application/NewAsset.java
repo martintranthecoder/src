@@ -153,7 +153,7 @@ public class NewAsset extends VBox implements LayoutHelper{
 			// Show a success message
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setHeaderText("Success");
-            alert.setContentText("Location created successfully.");
+            alert.setContentText("Asset created successfully.");
             alert.showAndWait();
 			
 		} catch (IOException ex) {

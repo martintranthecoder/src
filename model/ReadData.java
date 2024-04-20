@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 
 public interface ReadData<T> {
@@ -31,5 +29,28 @@ public interface ReadData<T> {
 	}
 	
 	T parseValue(String[] elements);
+	
+	public default T searchValue(String file, String search) throws IOException {
+		try (BufferedReader reader = new BufferedReader (new FileReader(file))) {
+			String headerLine = reader.readLine();
+			
+			String line;
+			
+			// read line to find
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split(",");
+				String name = parts[0].trim();
+				
+				//check 
+				if(name.startsWith(search)) {
+					return parseValue(parts);
+				}
+			}
+		}
+		return null;
+		
+	}
+
+	
 
 }
