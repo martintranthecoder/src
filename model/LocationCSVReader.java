@@ -5,7 +5,7 @@ public class LocationCSVReader implements ReadData<Location> {
 		String name = parts[0].trim();
 		String description = "";
 		
-		if (parts.length > 2) description = parts[1];
+		if (parts.length > 1) description = parts[1];
 		
 		return new Location(name, description);
 	}

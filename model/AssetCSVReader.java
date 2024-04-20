@@ -46,7 +46,7 @@ public class AssetCSVReader implements ReadData<Asset> {
 		String warranty = "";
 		LocalDate warrantyD = null;
 		
-		if (parts.length > 7) {
+		if (parts.length > 6) {
 			warranty = parts[6];
 			
 			if (warranty != "") {
