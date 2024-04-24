@@ -53,7 +53,16 @@ public class NewAsset extends VBox implements LayoutHelper{
 		super.setPadding(new Insets(40, 40, 40, 40));
 		
 		layout = new ArrayList<HBox>();
-		setChoices();
+		
+		try {
+			CategoryCSVReader categoryReader = new CategoryCSVReader();
+			LocationCSVReader locationReader = new LocationCSVReader();
+			
+			category = categoryReader.readData("category.csv");
+			location = locationReader.readData("location.csv");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
         layout.add(createTitle(title));
         layout.add(createTextLine(line1, true));
@@ -67,6 +76,7 @@ public class NewAsset extends VBox implements LayoutHelper{
         
         //Purchased Value
         ((TextField)layout.get(6).lookup("#text")).setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
+        
         
 		initialize(this, layout);
 		clearButtonAction(layout, 1, 2, 3, 4, 5, 6, 7);
@@ -151,13 +161,15 @@ public class NewAsset extends VBox implements LayoutHelper{
 				return;
 			}
 			
+			searchAsset.reloadAssets();
+			
 			// Show a success message
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setHeaderText("Success");
             alert.setContentText("Asset created successfully.");
             alert.showAndWait();
             
-            searchAsset.reloadAssets();
+            
 			
 		} catch (IOException ex) {
             // Show an error message if there was a problem saving the asset
@@ -168,13 +180,28 @@ public class NewAsset extends VBox implements LayoutHelper{
         }
 	}
 	
-	private void setChoices() {
-		CategoryCSVReader categoryReader = new CategoryCSVReader();
-		LocationCSVReader locationReader = new LocationCSVReader();
-		 
+	public void setChoices() {
+		category.clear();
+		location.clear();
+		
 		try {
+			CategoryCSVReader categoryReader = new CategoryCSVReader();
+			LocationCSVReader locationReader = new LocationCSVReader();
+			
 			category = categoryReader.readData("category.csv");
 			location = locationReader.readData("location.csv");
+			
+			// Get the ComboBox for categories
+	        ComboBox<String> categoryComboBox = (ComboBox<String>) layout.get(2).lookup("#choice");
+	        
+	        // Clear existing items
+	        categoryComboBox.getItems().clear();
+	        
+	        // Add new items from updated category HashMap
+	        for (String name : category.keySet()) {
+	            categoryComboBox.getItems().add(name);
+	        }
+	        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

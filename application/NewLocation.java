@@ -19,6 +19,7 @@ import model.Location;
 public class NewLocation extends VBox implements LayoutHelper{
     private Location location = new Location();
     private final String file = "location.csv";
+    private NewAsset newAsset = new NewAsset();
     
     private ArrayList<HBox> layout;
     private final String title = "Create New Location";
@@ -92,6 +93,8 @@ public class NewLocation extends VBox implements LayoutHelper{
                 // prevent second msg
                 return;
             }
+            
+            newAsset.setChoices();
 
             // Show a success message
             Alert alert = new Alert(AlertType.INFORMATION);

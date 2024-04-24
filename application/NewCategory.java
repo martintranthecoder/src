@@ -18,6 +18,7 @@ import model.Category;
 public class NewCategory extends VBox implements LayoutHelper {
 	private Category category = new Category();
 	private final String file = "category.csv";
+	NewAsset newAsset = new NewAsset();
 
 	private ArrayList<HBox> layout = new ArrayList<HBox>();
 	private final String title = "Create New TestPage";
@@ -81,6 +82,8 @@ public class NewCategory extends VBox implements LayoutHelper {
 				saveCategoryToCsv();
 				return;
 			}
+			
+			newAsset.setChoices();
 
 			// Show a success message
 			Alert alert = new Alert(AlertType.INFORMATION);
