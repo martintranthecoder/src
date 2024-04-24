@@ -33,15 +33,15 @@ public class AssetCSVReader implements ReadData<Asset> {
 		
 		String purchaseDate = parts[3];
 		LocalDate purchaseD = null;
-		if (purchaseDate != "") {
-			purchaseD = LocalDate.parse(purchaseDate, DateTimeFormatter.ISO_DATE);
-		}
+		if (!purchaseDate.equals("")) {
+	        purchaseD = LocalDate.parse(purchaseDate, DateTimeFormatter.ISO_DATE);
+	    }
 		
 		String description = parts[4];
 		 
 		String purchaseValue = parts[5];
 		Double d = 0.0;
-		if (purchaseValue != null)  d = Double.parseDouble(purchaseValue);
+		if (!purchaseValue.equals("null")) d = Double.parseDouble(purchaseValue);
 		
 		String warranty = "";
 		LocalDate warrantyD = null;
@@ -49,9 +49,9 @@ public class AssetCSVReader implements ReadData<Asset> {
 		if (parts.length > 6) {
 			warranty = parts[6];
 			
-			if (warranty != "") {
-				warrantyD = LocalDate.parse(purchaseDate, DateTimeFormatter.ISO_DATE);
-			}
+			if (!warranty.equals("")) {
+	            warrantyD = LocalDate.parse(warranty, DateTimeFormatter.ISO_DATE);
+	        }
 		}
 		
 		return new Asset(name, description, category, location, purchaseD, d, warrantyD);

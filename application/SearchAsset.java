@@ -1,12 +1,10 @@
 package application;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
@@ -16,10 +14,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import model.Asset;
+import model.AssetCSVReader;
+
 public class SearchAsset extends VBox implements LayoutHelper {
-    private final String file = "category.csv";
-    private TextField AssetNameField;
+    private final String file = "asset.csv";
+    private TextField assetNameField;
     private Label foundAssetLabel;
+    private HashMap<String, Asset> existingAssets = new HashMap<>();
 
     private ArrayList<HBox> layout = new ArrayList<>();
     private final String title = "Search Asset";
@@ -36,8 +38,17 @@ public class SearchAsset extends VBox implements LayoutHelper {
         initialize(this, layout);
 
         buttonAction(layout);
+        clearButtonAction(layout, 1);
         foundAssetLabel = new Label();
         this.getChildren().add(foundAssetLabel);
+
+        // Populate existingAssets HashMap
+        try {
+            AssetCSVReader assetReader = new AssetCSVReader();
+            existingAssets = assetReader.readData(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void buttonAction(ArrayList<HBox> arg) {
@@ -50,45 +61,24 @@ public class SearchAsset extends VBox implements LayoutHelper {
                 alert.setContentText("Please enter an asset name!");
                 alert.showAndWait();
             } else {
-                try {
-                    Set<String> existingAssets = getExistingAssets();
-                    if (existingAssets.contains(name)) {
-                        // Show the found asset name
-                        foundAssetLabel.setText("Found Asset: " + name);
-                        // Add delete button
-                        addDeleteButton(name);
-                    } else {
-                        // Show an error message if the asset does not exist
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setHeaderText("Error");
-                        alert.setContentText("Asset not found!");
-                        alert.showAndWait();
-                    }
-                } catch (IOException ex) {
-                    // Show an error message if there was a problem reading the assets
+                if (existingAssets.containsKey(name)) {
+                    // Show the found asset name
+                    foundAssetLabel.setText("Found Asset: " + name);
+                    // Add delete button
+                    addDeleteButton(name);
+                } else {
+                    // Show an error message if the asset does not exist
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText("Error");
-                    alert.setContentText("There was a problem reading existing assets");
+                    alert.setContentText("Asset not found!");
                     alert.showAndWait();
                 }
             }
         });
     }
 
-    private Set<String> getExistingAssets() throws IOException {
-        Set<String> assets = new HashSet<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Assuming each line contains a single asset name
-                assets.add(line.trim());
-            }
-        }
-        return assets;
-    }
-
     private void addDeleteButton(String assetName) {
-    	HBox buttonBox = new HBox(10);
+        HBox buttonBox = new HBox(10);
         Button editButton = new Button("Edit");
         Button deleteButton = new Button("Delete");
 
@@ -96,13 +86,18 @@ public class SearchAsset extends VBox implements LayoutHelper {
             // Handle edit action here
             // You can implement editing functionality
             // For example, opening a new window or dialog for editing
-            System.out.println("Edit action for asset: " + assetName);
+//            Asset target = existingAssets.get(assetName);
+//            EditAsset editPage = new EditAsset(target);
+//            
+//            this.getChildren().clear();
+//            this.getChildren().addAll(layout); // Add other layout elements if needed
+//            this.getChildren().add(editPage);
         });
 
         deleteButton.setOnAction(e -> {
+            existingAssets.remove(assetName);
+            // Update existing assets HashMap and file
             try {
-                Set<String> existingAssets = getExistingAssets();
-                existingAssets.remove(assetName);
                 writeAssetsToFile(existingAssets);
                 foundAssetLabel.setText("Deleted Asset: " + assetName);
             } catch (IOException ex) {
@@ -118,10 +113,13 @@ public class SearchAsset extends VBox implements LayoutHelper {
         this.getChildren().add(buttonBox);
     }
 
-    private void writeAssetsToFile(Set<String> assets) throws IOException {
+    private void writeAssetsToFile(HashMap<String, Asset> assets) throws IOException {
         try (FileWriter writer = new FileWriter(file)) {
-            for (String asset : assets) {
-                writer.write(asset + "\n");
+        	writer.write("Asset Name,Category,Location,Purchase Date,Description,"
+        			+ "Purchased Value,Warranty Expiration Date");
+            for (Asset asset : assets.values()) {
+            	writer.append("\n");
+            	writer.append(asset.saveToCsv());
             }
         }
     }

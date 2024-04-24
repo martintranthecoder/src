@@ -12,7 +12,7 @@ public class Location extends General_Info implements DataProcess{
 	
 	public void display() {
 		System.out.println("Location: " + this.getName());
-		System.out.println("Description: " + this.getDescription());
+		System.out.println("Description: " + this.getDescription().replaceAll("\\\\n", "\n"));
 	}
 
 	public String saveToCsv() {
