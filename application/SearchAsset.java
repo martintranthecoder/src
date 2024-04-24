@@ -36,6 +36,7 @@ public class SearchAsset extends VBox implements LayoutHelper {
         layout.add(lastLine());
 
         initialize(this, layout);
+       
 
         buttonAction(layout);
         clearButtonAction(layout, 1);
@@ -52,6 +53,7 @@ public class SearchAsset extends VBox implements LayoutHelper {
     }
 
     private void buttonAction(ArrayList<HBox> arg) {
+    	
         ((Button)arg.get(arg.size() - 1).getChildren().get(0)).setOnAction(e -> {
             String name = ((TextField)layout.get(1).lookup("#text")).getText();
             if (name.isEmpty()) {
@@ -61,17 +63,23 @@ public class SearchAsset extends VBox implements LayoutHelper {
                 alert.setContentText("Please enter an asset name!");
                 alert.showAndWait();
             } else {
-                if (existingAssets.containsKey(name)) {
-                    // Show the found asset name
-                    foundAssetLabel.setText("Found Asset: " + name);
-                    // Add delete button
-                    addDeleteButton(name);
-                } else {
-                    // Show an error message if the asset does not exist
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setHeaderText("Error");
-                    alert.setContentText("Asset not found!");
-                    alert.showAndWait();
+            	try {
+            		AssetCSVReader assetReader = new AssetCSVReader();
+                    Asset foundAsset = assetReader.searchValue(file, name);
+                    if (foundAsset != null) {
+                        // Show the found asset name
+                        foundAssetLabel.setText("Found Asset: " + foundAsset.getName());
+                        // Add delete button
+                        addDeleteButton(foundAsset.getName());
+                    } else {
+                        // Show an error message if the asset does not exist
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setHeaderText("Error");
+                        alert.setContentText("Asset not found!");
+                        alert.showAndWait();
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -111,6 +119,16 @@ public class SearchAsset extends VBox implements LayoutHelper {
 
         buttonBox.getChildren().addAll(editButton, deleteButton);
         this.getChildren().add(buttonBox);
+    }
+    
+    public void reloadAssets() {
+        existingAssets.clear();
+        try {
+            AssetCSVReader assetReader = new AssetCSVReader();
+            existingAssets = assetReader.readData(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void writeAssetsToFile(HashMap<String, Asset> assets) throws IOException {

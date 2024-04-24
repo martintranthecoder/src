@@ -31,6 +31,7 @@ public class NewAsset extends VBox implements LayoutHelper{
 	 * Navigation page on the left could change visibility of page on the right.
 	 */
 	private Asset asset = new Asset();
+	SearchAsset searchAsset = new SearchAsset();
 	
 	private HashMap<String, Category> category = new HashMap<String, Category>();;
 	private HashMap<String, Location> location = new HashMap<String, Location>();
@@ -155,6 +156,8 @@ public class NewAsset extends VBox implements LayoutHelper{
             alert.setHeaderText("Success");
             alert.setContentText("Asset created successfully.");
             alert.showAndWait();
+            
+            searchAsset.reloadAssets();
 			
 		} catch (IOException ex) {
             // Show an error message if there was a problem saving the asset
