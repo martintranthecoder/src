@@ -35,15 +35,15 @@ public class Main extends Application {
 		newCategory.setVisible("New Category Page".equals(choice));
 		newLocation.setVisible("New Location Page".equals(choice));
 		newAsset.setVisible("New Asset Page".equals(choice));
-		homeNavigator.setVisible(!welcomePage.isVisible());
 		search.setVisible("Search Page".equals(choice));
+		homeNavigator.setVisible(!welcomePage.isVisible());
 		//test page
 		//test.setVisible("Reports Page".equals(choice));
 	});
 
 	public void start(Stage primaryStage) throws Exception {
 		
-		rightSection.getChildren().addAll(welcomePage, newCategory, newLocation, newAsset, homeNavigator, search);
+		rightSection.getChildren().addAll(welcomePage, newCategory, newLocation, newAsset, search, homeNavigator);
 		initializePage();
 
 //		rightSection.getChildren().add(test);
