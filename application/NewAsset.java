@@ -77,10 +77,12 @@ public class NewAsset extends VBox implements LayoutHelper{
         //Purchased Value
         ((TextField)layout.get(6).lookup("#text")).setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
         
+//        setChoices();
         
 		initialize(this, layout);
 		clearButtonAction(layout, 1, 2, 3, 4, 5, 6, 7);
 		buttonAction(layout);
+		
 	}
 	
 	// getInfo() is in working progress.
@@ -180,32 +182,27 @@ public class NewAsset extends VBox implements LayoutHelper{
         }
 	}
 	
-	public void setChoices() {
-		category.clear();
-		location.clear();
-		
-		try {
-			CategoryCSVReader categoryReader = new CategoryCSVReader();
-			LocationCSVReader locationReader = new LocationCSVReader();
-			
-			category = categoryReader.readData("category.csv");
-			location = locationReader.readData("location.csv");
-			
-			// Get the ComboBox for categories
-	        ComboBox<String> categoryComboBox = (ComboBox<String>) layout.get(2).lookup("#choice");
-	        
-	        // Clear existing items
-	        categoryComboBox.getItems().clear();
-	        
-	        // Add new items from updated category HashMap
-	        for (String name : category.keySet()) {
-	            categoryComboBox.getItems().add(name);
-	        }
-	        
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
+//	public void setChoices() {
+//		category.clear();
+//		location.clear();
+//		
+//		try {
+//			CategoryCSVReader categoryReader = new CategoryCSVReader();
+//			LocationCSVReader locationReader = new LocationCSVReader();
+//			
+//			category = categoryReader.readData("category.csv");
+//			location = locationReader.readData("location.csv");
+//			
+//			layout.set(2, createDropdownList(line2, category));
+//			layout.set(3, createDropdownList(line3, location));
+//			
+//			reinitialize(this, layout);
+//			
+//	        
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
 
 }
