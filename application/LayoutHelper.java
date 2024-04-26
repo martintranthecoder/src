@@ -32,6 +32,15 @@ public interface LayoutHelper {
 			page.getChildren().add(itr);
 		}
 	}
+	
+//	public default void reinitialize(VBox page, ArrayList<HBox> line) {
+//		page.getChildren().clear();
+//		// Add contents to the VBox
+//		for (HBox itr : line) {
+//			page.getChildren().add(itr);
+//		}
+//	}
+	
 	/**
 	 * Program interface
 	 * @param page

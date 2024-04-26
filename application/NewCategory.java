@@ -57,6 +57,7 @@ public class NewCategory extends VBox implements LayoutHelper {
 				saveCategoryToCsv();
 				//clear TextField
 				clearTextField((TextField)arg.get(1).lookup("#text"));
+				
 			}
 			
 		});
@@ -82,8 +83,7 @@ public class NewCategory extends VBox implements LayoutHelper {
 				saveCategoryToCsv();
 				return;
 			}
-			
-			newAsset.setChoices();
+//			newAsset.setChoices();
 
 			// Show a success message
 			Alert alert = new Alert(AlertType.INFORMATION);

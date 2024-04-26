@@ -94,7 +94,7 @@ public class NewLocation extends VBox implements LayoutHelper{
                 return;
             }
             
-            newAsset.setChoices();
+//            newAsset.setChoices();
 
             // Show a success message
             Alert alert = new Alert(AlertType.INFORMATION);
