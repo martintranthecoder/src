@@ -7,13 +7,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
+import javafx.stage.Stage;
 import model.Asset;
 import model.AssetCSVReader;
 
@@ -94,12 +96,12 @@ public class SearchAsset extends VBox implements LayoutHelper {
             // Handle edit action here
             // You can implement editing functionality
             // For example, opening a new window or dialog for editing
-//            Asset target = existingAssets.get(assetName);
-//            EditAsset editPage = new EditAsset(target);
-//            
-//            this.getChildren().clear();
-//            this.getChildren().addAll(layout); // Add other layout elements if needed
-//            this.getChildren().add(editPage);
+            Asset target = existingAssets.get(assetName);
+            EditAsset editPage = new EditAsset(target);
+            
+            Stage editStage = new Stage();
+            editStage.setScene(new Scene(editPage));
+            editStage.show();
         });
 
         deleteButton.setOnAction(e -> {
@@ -130,6 +132,37 @@ public class SearchAsset extends VBox implements LayoutHelper {
             e.printStackTrace();
         }
     }
+    
+    public void clearButtonAction(ArrayList<HBox> arg, int... itr) {
+        ((Button) arg.get(arg.size() - 1).getChildren().get(1)).setOnAction(e -> {
+          foundAssetLabel.setText(""); // Clear the found asset text
+          HBox buttonBox = getDeleteButtonBox(); // Get reference to button box
+          if (buttonBox != null) {
+            this.getChildren().remove(buttonBox); // Remove the button box
+          }
+          
+          for(int i : itr) {
+				clearTextField((TextField)arg.get(i).lookup("#text"));
+			}
+        });
+      }
+
+      private HBox getDeleteButtonBox() {
+        // Search for the HBox containing the edit and delete buttons
+        for (Node child : this.getChildren()) {
+          if (child instanceof HBox) {
+            HBox hbox = (HBox) child;
+            if (hbox.getChildren().size() == 2 &&
+                hbox.getChildren().get(0) instanceof Button &&
+                ((Button) hbox.getChildren().get(0)).getText().equals("Edit") &&
+                hbox.getChildren().get(1) instanceof Button &&
+                ((Button) hbox.getChildren().get(1)).getText().equals("Delete")) {
+              return hbox;
+            }
+          }
+        }
+        return null;
+      }
 
     private void writeAssetsToFile(HashMap<String, Asset> assets) throws IOException {
         try (FileWriter writer = new FileWriter(file)) {
